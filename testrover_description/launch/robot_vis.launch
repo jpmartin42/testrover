@@ -1,0 +1,12 @@
+<!-- A simple launch file for handling rviz when coordinated with Gazebo -->
+<launch>
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find testrover_description)/config/urdf.rviz"/>
+
+
+    <!-- Simple method of remapping commands from one node to another -->
+    <remap from="twist_marker_server/cmd_vel" to="testrover_velocity_controller/cmd_vel"/>
+
+    <!-- Means of interacting with rover via GUI -->
+    <node pkg="interactive_marker_twist_server" type="marker_server" name="twist_marker_server"/>
+
+</launch>

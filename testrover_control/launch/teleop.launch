@@ -1,0 +1,4 @@
+<!-- Launch file currently just here to control the rover via RViz -->
+<launch>
+  <node pkg="interactive_marker_twist_server" type="marker_server" name="twist_marker_server"/>
+</launch>

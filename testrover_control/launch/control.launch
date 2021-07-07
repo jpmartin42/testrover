@@ -1,0 +1,10 @@
+<launch>
+<!-- Loads controller definitions into the ROS server -->
+
+    <rosparam command="load" file="$(find testrover_control)/config/control.yaml" />
+
+    <!-- Spawns controller based on above .yaml file names and declarations -->
+    <node name="controller_spawner" pkg="controller_manager" type="spawner"
+          args="testrover_joint_publisher testrover_velocity_controller"/>
+
+</launch>

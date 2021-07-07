@@ -1,0 +1,29 @@
+<launch>
+    <!-- File to launch both the robot in simulation and a simulated world -->
+
+    <!--
+        Receive time from /clock topic instead of system clock, allowing for
+        faux-"real-time" testing in sim. Especially imporant for slower computers.
+    -->
+    <arg name="use_sim_time" default="true"/>
+    <arg name="gui" default="true"/>
+    <!-- Change to a desired world, defaulting to empty Gazebo world bv  -->
+    <arg name="world_name" default="worlds/empty.world"/>
+
+    <!-- Launch Gazebo with the specified world -->
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+        <arg name="debug" value="0" />
+        <arg name="gui" value="$(arg gui)" />
+        <arg name="use_sim_time" value="$(arg use_sim_time)" />
+        <arg name="world_name" value="$(arg world_name)" />
+    </include>
+
+    <!-- spawn the robot in Gazebo-->
+    <include file="$(find testrover_gazebo)/launch/spawn_robot.launch">
+        <arg name="x" value="0" />
+        <arg name="y" value="0" />
+        <arg name="z" value="1.0" />
+        <arg name="yaw" value="0" />
+    </include>
+
+</launch>

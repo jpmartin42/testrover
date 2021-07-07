@@ -1,0 +1,26 @@
+<launch>
+    <!-- 
+        Spawns the specified robot inside an extent Gazebo world. Requires
+        Gazebo to be running and a world loaded. This file is run as part of 
+        robot_world.launch alongside with the world specification.
+    -->
+
+    <arg name="robot_name" default="testrover"/>
+
+    <!-- spawning coordinates -->
+    <arg name="x" default="0" />
+    <arg name="y" default="0" />
+    <arg name="z" default="1" />
+    <arg name="yaw" default="0" />
+
+    <!-- Load description and controllers -->
+    <include file="$(find testrover_description)/launch/description.launch">
+        <arg name="robot_name" value="$(arg robot_name)"/>
+    </include>
+    <include file="$(find testrover_control)/launch/control.launch" />
+
+    <!-- Spawn the robot -->
+    <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model"
+	    args="-urdf -model testrover -param robot_description -x $(arg x) -y $(arg y) -z $(arg z) -R 0 -P 0 -Y $(arg yaw)" />
+
+</launch>

@@ -1,0 +1,10 @@
+<!-- Simple launch file for defining robot description as part of larger processes -->
+<launch>
+
+  <arg name="robot_name" default="testrover"/>
+  <arg name="address" default="$(find testrover_description)/urdf/$(arg robot_name).urdf.xacro"/>
+
+  <param name="robot_description" command="$(find xacro)/xacro $(arg address)" />
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
+</launch>
