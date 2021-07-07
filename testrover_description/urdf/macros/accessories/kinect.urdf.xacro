@@ -1,0 +1,92 @@
+<?xml version="1.0"?>
+
+<!-- define xacro as the namespace referencing the xacro format. Important for compiling xacro files and macros-->
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+<!-- Macro detailing the Xbox Kinect -->
+<!-- Due to the nature of the macro setup, each kinect must be defined in its own xacro file. 
+     The frameName refrence cannot be given in a xacro:property
+-->
+
+<xacro:macro name="kinect" params="parent *origin">
+
+    <!-- Camera size -->
+    <xacro:property name="camera_x" value="0.025"/>
+    <xacro:property name="camera_y" value="0.07"/>
+    <xacro:property name="camera_z" value="0.027"/>
+
+    <!-- Definition of Gazebo camera plugin -->
+    <gazebo reference="kinect_link">
+        <sensor type="depth" name="kinect1">
+            <update_rate>20</update_rate>
+            	<plugin name="camera_plugin" filename="libgazebo_ros_openni_kinect.so">
+                        <baseline>0.2</baseline>
+	                    <alwaysOn>true</alwaysOn>
+                        <updateRate>0.0</updateRate>
+                        <cameraName>kinect_ir</cameraName>
+                        <imageTopicName>/camera/color/image_raw</imageTopicName>
+                        <cameraInfoTopicName>/camera/color/camera_info</cameraInfoTopicName>
+                        <depthImageTopicName>/camera/depth/image_raw</depthImageTopicName>
+                        <depthImageCameraInfoTopicName>/camera/depth/camera_info</depthImageCameraInfoTopicName>
+                        <pointCloudTopicName>/camera/depth/points</pointCloudTopicName>
+                        <frameName>kinect_link_optical</frameName>
+                        <pointCloudCutoff>0.5</pointCloudCutoff>
+                        <pointCloudCutoffMax>3.0</pointCloudCutoffMax>
+                        <distortionK1>0</distortionK1>
+                        <distortionK2>0</distortionK2>
+                        <distortionK3>0</distortionK3>
+                        <distortionT1>0</distortionT1>
+                        <distortionT2>0</distortionT2>
+                        <CxPrime>0</CxPrime>
+                        <Cx>0</Cx>
+                        <Cy>0</Cy>
+                        <focalLength>0</focalLength>
+                        <hackBaseline>0</hackBaseline>
+                </plugin>
+        </sensor>
+    </gazebo>
+
+       <!-- Create Kinect model -->
+    <link name="kinect_link">
+
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <box size="${camera_x} ${camera_y} ${camera_z}"/>
+            </geometry>
+        </visual>
+
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <box size="${camera_x} ${camera_y} ${camera_z}"/>
+            </geometry>
+        </collision>
+
+        <inertial>
+            <mass value="1e-5" />
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+        </inertial>
+    </link>
+
+
+    <joint name="kinect_joint" type="fixed">
+        <axis xyz="1 0 0" />
+        <xacro:insert_block name="origin"/>        
+        <parent link="${parent}"/>
+        <child link="kinect_link"/>
+    </joint>
+
+    <link name="kinect_link_optical">
+    </link>
+
+    <joint name="kinect_joint_optical" type="fixed">
+        <origin xyz="0 0 0" rpy="${-pi/2} 0 ${-pi/2}"/>
+        <parent link="kinect_link"/>
+        <child link="kinect_link_optical"/>
+    </joint>
+
+</xacro:macro>
+
+</robot>

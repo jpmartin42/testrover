@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+
+<!-- define xacro as the namespace referencing the xacro format. Important for compiling Xacro files and macros-->
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+<!-- Macro detailing the reactions of each wheel -->
+<xacro:macro name="wheel" params="prefix parent *origin">
+
+    <!-- Create a link for the wheels -->
+    <link name="${prefix}_wheel_link">
+        <visual>
+            <!-- Set origin to be rotated 90 degrees to have base on ground -->
+            <origin xyz="0 0 0" rpy="${PI/2} 0 0"/>
+            <geometry>
+                <cylinder radius="${wheel_radius}" length="${wheel_depth}"/>
+            </geometry>
+        </visual>
+
+        <collision>
+            <origin xyz="0 0 0" rpy="${PI/2} 0 0"/>
+            <geometry>
+                <cylinder radius="${wheel_radius}" length="${wheel_depth}"/>
+            </geometry>
+        </collision>
+
+        <!-- Inertial values are required for Gazebo -->
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <mass value="0.477"/>
+            <inertia ixx="0.08" ixy="0" ixz="0"
+                        iyy="0.14" iyz="0" izz="0.08" />
+        </inertial>
+    </link>
+
+    <joint name="${prefix}_wheel" type="continuous">
+        <parent link="${parent}"/>
+        <child link="${prefix}_wheel_link"/>
+
+        <!-- 
+            Use insert_block to specify joint (and wheel) position in wheel
+            declaration later
+        -->
+        <xacro:insert_block name="origin"/>
+
+        <!-- Specify rotation axis of wheel -->
+        <axis xyz="0 1 0"/>
+    </joint>
+
+    <!-- Transission for Gazebo -->
+    <transmission name="${prefix}_wheel_trans">
+        <type>transmission_interface/SimpleTransmission</type>
+        <!-- 
+            Reference the joint in Gazebo. We want a velocity interface here,
+            as we want to be able to control the speed of the rover.
+        -->
+        <joint name="${prefix}_wheel">
+            <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="${prefix}_actuator">
+            <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+            <mechanicalreduction>1</mechanicalreduction>
+        </actuator>
+    </transmission>
+
+</xacro:macro>
+
+</robot>

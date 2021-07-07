@@ -17,6 +17,11 @@
         </plugin>
     </gazebo>
 
+    <!-- Define the kinect -->
+    <xacro:include filename="$(find testrover_description)/urdf/macros/accessories/kinect.urdf.xacro" />
+
+    <!-- Macro detailing the reactions of each wheel -->
+    <xacro:include filename="$(find testrover_description)/urdf/macros/components/wheel.urdf.xacro" />
 
     <xacro:property name="PI" value="3.1415926535897931" />
 
@@ -38,107 +43,10 @@
     <xacro:property name="wheel_spacing_x" value="0.2858748"/>
     <xacro:property name="wheel_spacing_y" value="0.33675"/>
 
-    <!-- Camera size -->
-    <xacro:property name="camera_x" value="0.025"/>
-    <xacro:property name="camera_y" value="0.07"/>
-    <xacro:property name="camera_z" value="0.027"/>
-
     <!-- Camera location -->
-    <xacro:property name="camera_mnt_x" value="${(-camera_x+chassis_length)/2}"/>
+    <xacro:property name="camera_mnt_x" value="${(-.025+chassis_length)/2}"/>
     <xacro:property name="camera_mnt_y" value="0.0"/>
-    <xacro:property name="camera_mnt_z" value="${(camera_z+chassis_height)/2}"/>
-
-    <!-- Definition of Gazebo camera plugin -->
-    <gazebo reference="kinect_link">
-        <sensor type="depth" name="kinect1">
-            <update_rate>20</update_rate>
-            	<plugin name="camera_plugin" filename="libgazebo_ros_openni_kinect.so">
-                        <baseline>0.2</baseline>
-	                    <alwaysOn>true</alwaysOn>
-                        <updateRate>0.0</updateRate>
-                        <cameraName>kinect_ir</cameraName>
-                        <imageTopicName>/camera/color/image_raw</imageTopicName>
-                        <cameraInfoTopicName>/camera/color/camera_info</cameraInfoTopicName>
-                        <depthImageTopicName>/camera/depth/image_raw</depthImageTopicName>
-                        <depthImageCameraInfoTopicName>/camera/depth/camera_info</depthImageCameraInfoTopicName>
-                        <pointCloudTopicName>/camera/depth/points</pointCloudTopicName>
-                        <frameName>kinect_link</frameName>
-                        <pointCloudCutoff>0.5</pointCloudCutoff>
-                        <pointCloudCutoffMax>3.0</pointCloudCutoffMax>
-                        <distortionK1>0</distortionK1>
-                        <distortionK2>0</distortionK2>
-                        <distortionK3>0</distortionK3>
-                        <distortionT1>0</distortionT1>
-                        <distortionT2>0</distortionT2>
-                        <CxPrime>0</CxPrime>
-                        <Cx>0</Cx>
-                        <Cy>0</Cy>
-                        <focalLength>0</focalLength>
-                        <hackBaseline>0</hackBaseline>
-                </plugin>
-        </sensor>
-    </gazebo>
-
-    <!-- Macro detailing the reactions of each wheel -->
-    <xacro:macro name="wheel" params="prefix *origin">
-
-        <!-- Create a link for the wheels -->
-        <link name="${prefix}_wheel_link">
-            <visual>
-                <!-- Set origin to be rotated 90 degrees to have base on ground -->
-                <origin xyz="0 0 0" rpy="${PI/2} 0 0"/>
-                <geometry>
-                    <cylinder radius="${wheel_radius}" length="${wheel_depth}"/>
-                </geometry>
-            </visual>
-
-            <collision>
-                <origin xyz="0 0 0" rpy="${PI/2} 0 0"/>
-                <geometry>
-                    <cylinder radius="${wheel_radius}" length="${wheel_depth}"/>
-                </geometry>
-            </collision>
-
-            <!-- Inertial values are required for Gazebo -->
-            <inertial>
-                <origin xyz="0 0 0" rpy="0 0 0"/>
-                <mass value="0.477"/>
-                <inertia ixx="0.08" ixy="0" ixz="0"
-                         iyy="0.14" iyz="0" izz="0.08" />
-            </inertial>
-        </link>
-
-        <joint name="${prefix}_wheel" type="continuous">
-            <parent link="base_link"/>
-            <child link="${prefix}_wheel_link"/>
-
-            <!-- 
-                Use insert_block to specify joint (and wheel) position in wheel
-                declaration later
-            -->
-            <xacro:insert_block name="origin"/>
-
-            <!-- Specify rotation axis of wheel -->
-            <axis xyz="0 1 0"/>
-        </joint>
-
-        <!-- Transission for Gazebo -->
-        <transmission name="${prefix}_wheel_trans">
-            <type>transmission_interface/SimpleTransmission</type>
-            <!-- 
-                Reference the joint in Gazebo. We want a velocity interface here,
-                as we want to be able to control the speed of the rover.
-            -->
-            <joint name="${prefix}_wheel">
-                <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
-            </joint>
-            <actuator name="${prefix}_actuator">
-                <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
-                <mechanicalreduction>1</mechanicalreduction>
-            </actuator>
-        </transmission>
-
-    </xacro:macro>
+    <xacro:property name="camera_mnt_z" value="${(.027+chassis_height)/2}"/>
 
     <!-- Create base_link for central robot chassis -->
     <link name="base_link">
@@ -163,52 +71,24 @@
     </link>
 
     <!-- Declare the wheels and their origins -->
-    <xacro:wheel prefix="front_left">
+    <xacro:wheel prefix="front_left" parent="base_link">
         <origin xyz="${wheel_spacing_x} ${wheel_spacing_y} 0.0" rpy="0 0 0"/>
     </xacro:wheel>
 
-    <xacro:wheel prefix="rear_left">
+    <xacro:wheel prefix="rear_left" parent="base_link">
         <origin xyz="${-wheel_spacing_x} ${wheel_spacing_y} 0.0" rpy="0 0 0"/>
     </xacro:wheel>
 
-    <xacro:wheel prefix="front_right">
+    <xacro:wheel prefix="front_right" parent="base_link">
         <origin xyz="${wheel_spacing_x} ${-wheel_spacing_y} 0.0" rpy="0 0 0"/>
     </xacro:wheel>
 
-    <xacro:wheel prefix="rear_right">
+    <xacro:wheel prefix="rear_right" parent="base_link">
         <origin xyz="${-wheel_spacing_x} ${-wheel_spacing_y} 0.0" rpy="0 0 0"/>
     </xacro:wheel>
 
-    <!-- Create Kinect model -->
-    <link name="kinect_link">
-
-    <visual>
-        <origin xyz="0 0 0" rpy="0 0 0"/>
-        <geometry>
-            <box size="${camera_x} ${camera_y} ${camera_z}"/>
-        </geometry>
-    </visual>
-
-    <collision>
-        <origin xyz="0 0 0" rpy="0 0 0"/>
-        <geometry>
-            <box size="${camera_x} ${camera_y} ${camera_z}"/>
-        </geometry>
-    </collision>
-
-    <inertial>
-        <mass value="1e-5" />
-        <origin xyz="0 0 0" rpy="0 0 0"/>
-        <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
-    </inertial>
-    </link>
-
-
-  <joint name="kinect_joint" type="fixed">
-    <axis xyz="1 0 0" />
-    <origin xyz="${camera_mnt_x} ${camera_mnt_y} ${camera_mnt_z}" rpy="0 0 0"/>
-    <parent link="base_link"/>
-    <child link="kinect_link"/>
-  </joint>
+    <xacro:kinect parent="base_link">\
+        <origin xyz="${camera_mnt_x} ${camera_mnt_y} ${camera_mnt_z}" rpy="0 0 0"/>
+    </xacro:kinect>
 
 </robot>
