@@ -13,7 +13,7 @@
     <!-- Load the Gazebo-ROS Control interface -->
     <gazebo>
         <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
-            <!--<robotNamespace>/testrover</robotNamespace>-->
+            <!--<robotNamespace></robotNamespace>-->
         </plugin>
     </gazebo>
 
@@ -71,23 +71,24 @@
     </link>
 
     <!-- Declare the wheels and their origins -->
-    <xacro:wheel prefix="front_left" parent="base_link">
+    <xacro:wheel prefix="front_left" parent="base_link" wheelrad="${wheel_radius}" wheeldepth="${wheel_depth}" wheelkg="${wheel_mass}" >
         <origin xyz="${wheel_spacing_x} ${wheel_spacing_y} 0.0" rpy="0 0 0"/>
     </xacro:wheel>
 
-    <xacro:wheel prefix="rear_left" parent="base_link">
+    <xacro:wheel prefix="rear_left" parent="base_link" wheelrad="${wheel_radius}" wheeldepth="${wheel_depth}" wheelkg="${wheel_mass}">
         <origin xyz="${-wheel_spacing_x} ${wheel_spacing_y} 0.0" rpy="0 0 0"/>
     </xacro:wheel>
 
-    <xacro:wheel prefix="front_right" parent="base_link">
+    <xacro:wheel prefix="front_right" parent="base_link" wheelrad="${wheel_radius}" wheeldepth="${wheel_depth}" wheelkg="${wheel_mass}">
         <origin xyz="${wheel_spacing_x} ${-wheel_spacing_y} 0.0" rpy="0 0 0"/>
     </xacro:wheel>
 
-    <xacro:wheel prefix="rear_right" parent="base_link">
+    <xacro:wheel prefix="rear_right" parent="base_link" wheelrad="${wheel_radius}" wheeldepth="${wheel_depth}" wheelkg="${wheel_mass}">
         <origin xyz="${-wheel_spacing_x} ${-wheel_spacing_y} 0.0" rpy="0 0 0"/>
     </xacro:wheel>
 
-    <xacro:kinect parent="base_link">\
+    <!-- Add the kinect at its origin -->
+    <xacro:kinect parent="base_link">
         <origin xyz="${camera_mnt_x} ${camera_mnt_y} ${camera_mnt_z}" rpy="0 0 0"/>
     </xacro:kinect>
 

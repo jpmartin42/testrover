@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 
-<!-- define xacro as the namespace referencing the xacro format. Important for compiling Xacro files and macros-->
+<!-- define xacro as the namespace referencing the xacro format. Important for compiling xacro files and macros-->
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-<!-- Macro detailing the reactions of each wheel -->
-<xacro:macro name="wheel" params="prefix parent *origin">
+<!-- Macro detailing the details of each wheel -->
+<xacro:macro name="wheel" params="prefix parent wheelrad wheeldepth wheelkg *origin">
 
     <!-- Create a link for the wheels -->
     <link name="${prefix}_wheel_link">
@@ -12,21 +12,21 @@
             <!-- Set origin to be rotated 90 degrees to have base on ground -->
             <origin xyz="0 0 0" rpy="${PI/2} 0 0"/>
             <geometry>
-                <cylinder radius="${wheel_radius}" length="${wheel_depth}"/>
+                <cylinder radius="${wheelrad}" length="${wheeldepth}"/>
             </geometry>
         </visual>
 
         <collision>
             <origin xyz="0 0 0" rpy="${PI/2} 0 0"/>
             <geometry>
-                <cylinder radius="${wheel_radius}" length="${wheel_depth}"/>
+                <cylinder radius="${wheelrad}" length="${wheeldepth}"/>
             </geometry>
         </collision>
 
         <!-- Inertial values are required for Gazebo -->
         <inertial>
             <origin xyz="0 0 0" rpy="0 0 0"/>
-            <mass value="0.477"/>
+            <mass value="${wheelkg}"/>
             <inertia ixx="0.08" ixy="0" ixz="0"
                         iyy="0.14" iyz="0" izz="0.08" />
         </inertial>
@@ -37,8 +37,7 @@
         <child link="${prefix}_wheel_link"/>
 
         <!-- 
-            Use insert_block to specify joint (and wheel) position in wheel
-            declaration later
+            Use insert_block to specify joint (and wheel) position in wheel declaration
         -->
         <xacro:insert_block name="origin"/>
 
