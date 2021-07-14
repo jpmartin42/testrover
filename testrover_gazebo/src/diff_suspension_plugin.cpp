@@ -10,7 +10,7 @@
 #include <gazebo/physics/physics.hh>
 #include <ros/ros.h>
 
-namepsace gazebo {
+namespace gazebo {
 
 // Create a differential suspension plugin as a child of the ModelPlugin class from Gazebo
 class DiffSuspensionPlugin : public ModelPlugin {
@@ -21,20 +21,20 @@ public:
 
     if (!_sdf->HasElement("jointA")) {
       ROS_ERROR(
-          "No jointA element present. DifferentialPlugin could not be loaded.");
+          "No jointA element present. DiffSuspensionPlugin could not be loaded.");
       return;
     }
     joint_a_name_ = _sdf->GetElement("jointA")->Get<std::string>();
 
     if (!_sdf->HasElement("jointB")) {
       ROS_ERROR(
-          "No jointB element present. DifferentialPlugin could not be loaded.");
+          "No jointB element present. DiffSuspensionPlugin could not be loaded.");
       return;
     }
     joint_b_name_ = _sdf->GetElement("jointB")->Get<std::string>();
 
     if (!_sdf->HasElement("forceConstant")) {
-      ROS_ERROR("No forceConstant element present. DifferentialPlugin could "
+      ROS_ERROR("No forceConstant element present. DiffSuspensionPlugin could "
                 "not be loaded.");
       return;
     }
@@ -44,28 +44,29 @@ public:
     if (!joint_a_) {
       ROS_ERROR_STREAM("No joint named \""
                        << joint_a_name_
-                       << "\". DifferentialPlugin could not be loaded.");
+                       << "\". DiffSuspensionPlugin could not be loaded.");
       return;
     }
-
+2
     joint_b_ = model_->GetJoint(joint_b_name_);
     if (!joint_b_) {
       ROS_ERROR_STREAM("No joint named \""
                        << joint_b_name_
-                       << "\". DifferentialPlugin could not be loaded.");
+                       << "\". DiffSuspensionPlugin could not be loaded.");
       return;
     }
 
     this->updateConnection = event::Events::ConnectWorldUpdateBegin(
-        std::bind(&DifferentialPlugin::OnUpdate, this));
+        std::bind(&DiffSuspensionPlugin::OnUpdate, this));
 
-    ROS_INFO_STREAM("DifferentialPlugin loaded! Joint A: \""
+    ROS_INFO_STREAM("DiffSuspensionPlugin loaded! Joint A: \""
                     << joint_a_name_ << "\", Joint B: \"" << joint_b_name_
                     << "\", Force Constant: " << force_constant_);
   }
 
   void OnUpdate() {
     double angle_diff = joint_a_->Position() - joint_b_->Position();
+    //ROS_INFO_STREAM("Angle difference = " << angle_diff);
     joint_a_->SetForce(0, -angle_diff * force_constant_);
     joint_b_->SetForce(0, angle_diff * force_constant_);
   }
@@ -81,6 +82,6 @@ private:
   event::ConnectionPtr updateConnection;
 };
 
-GZ_REGISTER_MODEL_PLUGIN(DifferentialPlugin)
+GZ_REGISTER_MODEL_PLUGIN(DiffSuspensionPlugin)
 
 } // end namespace gazebo

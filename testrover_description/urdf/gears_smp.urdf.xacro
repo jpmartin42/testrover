@@ -3,14 +3,6 @@
 <!--
     A rough model of the Gears SMP rover. Details at http://www.gearseds.com/surface_mobility_platform.html
 -->
-
-    <!-- Load the Gazebo-ROS Control interface -->
-    <gazebo>
-        <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
-            <!--<robotNamespace></robotNamespace>-->
-        </plugin>
-    </gazebo>
-
     <!-- Add relevant macros -->
     <xacro:include filename="$(find testrover_description)/urdf/macros/components/wheel.urdf.xacro" />
     <xacro:include filename="$(find testrover_description)/urdf/macros/components/rocker.urdf.xacro" />
@@ -24,13 +16,13 @@
     <xacro:property name="chassis_length" value=".30"/>
     <xacro:property name="chassis_width" value=".14"/>
     <xacro:property name="chassis_height" value=".0889"/>
-    <xacro:property name="chassis_mass" value="5.0"/>
+    <xacro:property name="chassis_mass" value="1.584994"/>
 
     <!-- Rocker dimensions and positioning -->
     <xacro:property name="rocker_length" value=".2667"/>
     <xacro:property name="rocker_width" value=".03175"/>
     <xacro:property name="rocker_height" value=".03175"/>
-    <xacro:property name="rocker_mass" value="0.5"/>
+    <xacro:property name="rocker_mass" value="1.387336"/>
 
     <xacro:property name="rocker_x" value="0.0"/>
     <xacro:property name="rocker_y" value="${0.12065-0.5*rocker_width}"/>
@@ -39,7 +31,7 @@
     <!-- Wheel dimensions -->
     <xacro:property name="wheel_radius" value="0.08255"/>
     <xacro:property name="wheel_depth" value=".0508"/>
-    <xacro:property name="wheel_mass" value="1.5"/>
+    <xacro:property name="wheel_mass" value="0.283642"/>
 
     <!-- Wheel positioning -->
     <xacro:property name="wheel_spacing_x" value="0.19678256"/>
@@ -63,17 +55,19 @@
         <inertial>
             <origin xyz="0 0 0" rpy="0 0 0"/>
             <mass value="${chassis_mass}"/>
-            <inertia ixx="1.25" ixy="0.0" ixz="0.0"
-                     iyy="7.0" iyz="0.0" izz="8.0" />
-        </inertial>
+            <inertia
+                ixx="0.01042" ixy="0.001177" ixz="-0.0008871"
+                iyy="0.01045" iyz="0.0002226"
+                izz="0.01817"/>
+            </inertial>
     </link>
 
     <!-- Add the rockers -->
-    <xacro:rocker prefix="left" parent="base_link" rockerx="${rocker_length}" rockery="${rocker_width}" rockerz="${rocker_height}" rockerkg="${rocker_mass}">
+    <xacro:rocker prefix="left" parent="base_link" rockerx="${rocker_length}" rockery="${rocker_width}" rockerz="${rocker_height}" rockerkg="${rocker_mass}" mimicing="0" mimic_joint="">
         <origin xyz="${rocker_x} ${rocker_y} ${-rocker_z}" rpy="0 0 0"/>
     </xacro:rocker>
 
-    <xacro:rocker prefix="right" parent="base_link" rockerx="${rocker_length}" rockery="${rocker_width}" rockerz="${rocker_height}" rockerkg="${rocker_mass}">
+    <xacro:rocker prefix="right" parent="base_link" rockerx="${rocker_length}" rockery="${rocker_width}" rockerz="${rocker_height}" rockerkg="${rocker_mass}"  mimicing="1" mimic_joint="left_rocker_joint">
         <origin xyz="${rocker_x} ${-rocker_y} ${-rocker_z}" rpy="0 0 0"/>
     </xacro:rocker>
 
@@ -93,5 +87,22 @@
     <xacro:wheel prefix="rear_right" parent="right_rocker_link" wheelrad="${wheel_radius}" wheeldepth="${wheel_depth}" wheelkg="${wheel_mass}">
         <origin xyz="${-wheel_spacing_x} ${-wheel_spacing_y} ${wheel_spacing_z}" rpy="0 0 0"/>
     </xacro:wheel>
+
+    <!-- Add the differential suspenion sim plugin and reference the two rockers, as well as the force constant between them -->
+    <gazebo>
+        <plugin name="rover_gazebo_diff_plugin" filename="librover_gazebo_diff_plugin.so">
+            <jointA>left_rocker_joint</jointA>
+            <jointB>right_rocker_joint</jointB>
+            <forceConstant>100.0</forceConstant>
+        </plugin>
+    </gazebo>
+
+        <!-- Load the Gazebo-ROS Control interface -->
+    <gazebo>
+        <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+            <!--<robotNamespace></robotNamespace>-->
+        </plugin>
+    </gazebo>
+
 
 </robot>

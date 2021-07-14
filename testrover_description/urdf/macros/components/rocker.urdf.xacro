@@ -4,7 +4,7 @@
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
 
 <!-- Description for a simple rocker bar. Could also be used as a bogie? -->
-<xacro:macro name="rocker" params="prefix parent rockerx rockery rockerz rockerkg *origin">
+<xacro:macro name="rocker" params="prefix parent rockerx rockery rockerz rockerkg mimicing mimic_joint *origin">
 
     <!-- Create a link for the wheels -->
     <link name="${prefix}_rocker_link">
@@ -27,12 +27,14 @@
         <inertial>
             <origin xyz="0 0 0" rpy="0 0 0"/>
             <mass value="${rockerkg}"/>
-            <inertia ixx="0.001" ixy="0" ixz="0"
-                        iyy="0.001" iyz="0" izz="0.001" />
+            <inertia
+                ixx="0.002956" ixy="-0.000001489324" ixz="-0.000008103407"
+                iyy="0.02924"  iyz="0.00007112"
+                izz="0.02832"/>
         </inertial>
     </link>
 
-    <joint name="${prefix}_rocker_joint" type="continuous">
+    <joint name="${prefix}_rocker_joint" type="revolute">
         <parent link="${parent}"/>
         <child link="${prefix}_rocker_link"/>
 
@@ -43,6 +45,12 @@
 
         <!-- Specify rotation axis of wheel -->
         <axis xyz="0 1 0"/>
+        <limit effort="100.0" lower="-0.24" upper="0.24" velocity="100.0"/>
+        
+        <!-- Set joint to mimic another joint specified above if true -->
+        <xacro:if value="${mimicing == 1}">
+        <mimic joint= "${mimic_joint}"/>
+        </xacro:if>
     </joint>
 
 </xacro:macro>
