@@ -18,10 +18,10 @@
     </gazebo>
 
     <!-- Define the kinect -->
-    <xacro:include filename="$(find testrover_description)/urdf/macros/accessories/kinect.urdf.xacro" />
+    <xacro:include filename="$(find rover_robots)/urdf/macros/accessories/kinect.urdf.xacro" />
 
     <!-- Macro detailing the reactions of each wheel -->
-    <xacro:include filename="$(find testrover_description)/urdf/macros/components/wheel.urdf.xacro" />
+    <xacro:include filename="$(find rover_robots)/urdf/macros/components/wheel.urdf.xacro" />
 
     <xacro:property name="PI" value="3.1415926535897931" />
 
@@ -73,18 +73,26 @@
     <!-- Declare the wheels and their origins -->
     <xacro:wheel prefix="front_left" parent="base_link" wheelrad="${wheel_radius}" wheeldepth="${wheel_depth}" wheelkg="${wheel_mass}" >
         <origin xyz="${wheel_spacing_x} ${wheel_spacing_y} 0.0" rpy="0 0 0"/>
+        <inertia ixx="0.08" ixy="0" ixz="0"
+                 iyy="0.14" iyz="0" izz="0.08" />
     </xacro:wheel>
 
     <xacro:wheel prefix="rear_left" parent="base_link" wheelrad="${wheel_radius}" wheeldepth="${wheel_depth}" wheelkg="${wheel_mass}">
         <origin xyz="${-wheel_spacing_x} ${wheel_spacing_y} 0.0" rpy="0 0 0"/>
+        <inertia ixx="0.08" ixy="0" ixz="0"
+                 iyy="0.14" iyz="0" izz="0.08" />
     </xacro:wheel>
 
     <xacro:wheel prefix="front_right" parent="base_link" wheelrad="${wheel_radius}" wheeldepth="${wheel_depth}" wheelkg="${wheel_mass}">
         <origin xyz="${wheel_spacing_x} ${-wheel_spacing_y} 0.0" rpy="0 0 0"/>
+        <inertia ixx="0.08" ixy="0" ixz="0"
+                 iyy="0.14" iyz="0" izz="0.08" />
     </xacro:wheel>
 
     <xacro:wheel prefix="rear_right" parent="base_link" wheelrad="${wheel_radius}" wheeldepth="${wheel_depth}" wheelkg="${wheel_mass}">
         <origin xyz="${-wheel_spacing_x} ${-wheel_spacing_y} 0.0" rpy="0 0 0"/>
+        <inertia ixx="0.08" ixy="0" ixz="0"
+                 iyy="0.14" iyz="0" izz="0.08" />
     </xacro:wheel>
 
     <!-- Add the kinect at its origin -->

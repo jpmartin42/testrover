@@ -1,6 +1,6 @@
 <!-- A simple launch file for handling rviz when coordinated with Gazebo -->
 <launch>
-    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find testrover_description)/config/urdf.rviz"/>
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find rover_robots)/config/urdf.rviz"/>
 
 
     <!-- Simple method of remapping commands from one node to another -->

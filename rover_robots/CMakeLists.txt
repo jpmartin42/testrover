@@ -1,15 +1,9 @@
 cmake_minimum_required(VERSION 3.0.2)
-project(testrover_description)
+project(rover_robots)
 
 find_package(catkin REQUIRED COMPONENTS
-  geometry_msgs
-  roscpp
-  rviz
-  tf
-  urdf
-  xacro
-  joint_state_publisher
-  joint_state_publisher_gui
+  roslaunch
+
 )
 
 include_directories(

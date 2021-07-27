@@ -14,13 +14,15 @@
     <arg name="yaw" default="0" />
 
     <!-- Load description and controllers -->
-    <include file="$(find testrover_description)/launch/description.launch">
+    <include file="$(find rover_robots)/launch/description.launch">
         <arg name="robot_name" value="$(arg robot_name)"/>
     </include>
-    <include file="$(find testrover_control)/launch/control.launch" />
+    <include file="$(find rover_robots)/launch/control.launch" >
+        <arg name="robot_name" value="$(arg robot_name)"/>
+    </include>
 
     <!-- Spawn the robot -->
     <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model"
-	    args="-urdf -model testrover -param robot_description -x $(arg x) -y $(arg y) -z $(arg z) -R 0 -P 0 -Y $(arg yaw)" />
+	    args="-urdf -model $(arg robot_name) -param robot_description -x $(arg x) -y $(arg y) -z $(arg z) -R 0 -P 0 -Y $(arg yaw)" />
 
 </launch>

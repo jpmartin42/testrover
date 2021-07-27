@@ -4,9 +4,9 @@
 
   <arg name="robot_name" default=""/>
   <arg name="gui" default="true" />
-  <arg name="rvizconfig" default="$(find testrover_description)/config/urdf.rviz" />
+  <arg name="rvizconfig" default="$(find rover_robots)/config/urdf.rviz" />
 
-  <arg name="address" default="$(find testrover_description)/urdf/$(arg robot_name).urdf.xacro"/>
+  <arg name="address" default="$(find rover_robots)/$(arg robot_name)/urdf/$(arg robot_name).urdf.xacro"/>
 
   <param name="robot_description" command="$(find xacro)/xacro $(arg address)" />
 

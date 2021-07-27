@@ -1,7 +1,9 @@
 <launch>
 <!-- Loads controller definitions into the ROS server -->
 
-    <rosparam command="load" file="$(find testrover_control)/config/control.yaml" />
+    <arg name="robot_name" default="testrover"/>
+
+    <rosparam command="load" file="$(find rover_robots)/$(arg robot_name)/controls/control.yaml" />
 
     <!-- Spawns controller based on above .yaml file names and declarations -->
     <node name="controller_spawner" pkg="controller_manager" type="spawner"

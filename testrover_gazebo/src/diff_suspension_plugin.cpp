@@ -47,7 +47,7 @@ public:
                        << "\". DiffSuspensionPlugin could not be loaded.");
       return;
     }
-2
+
     joint_b_ = model_->GetJoint(joint_b_name_);
     if (!joint_b_) {
       ROS_ERROR_STREAM("No joint named \""

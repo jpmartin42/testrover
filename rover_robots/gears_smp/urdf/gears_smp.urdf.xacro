@@ -4,8 +4,8 @@
     A rough model of the Gears SMP rover. Details at http://www.gearseds.com/surface_mobility_platform.html
 -->
     <!-- Add relevant macros -->
-    <xacro:include filename="$(find testrover_description)/urdf/macros/components/wheel.urdf.xacro" />
-    <xacro:include filename="$(find testrover_description)/urdf/macros/components/rocker.urdf.xacro" />
+    <xacro:include filename="$(find rover_robots)/urdf/macros/components/wheel.urdf.xacro" />
+    <xacro:include filename="$(find rover_robots)/urdf/macros/components/rocker.urdf.xacro" />
 
 
     <xacro:property name="PI" value="3.1415926535897931" />
@@ -65,27 +65,51 @@
     <!-- Add the rockers -->
     <xacro:rocker prefix="left" parent="base_link" rockerx="${rocker_length}" rockery="${rocker_width}" rockerz="${rocker_height}" rockerkg="${rocker_mass}" mimicing="0" mimic_joint="">
         <origin xyz="${rocker_x} ${rocker_y} ${-rocker_z}" rpy="0 0 0"/>
+        <inertia
+            ixx="0.002956" ixy="-0.000001489324" ixz="-0.000008103407"
+            iyy="0.02924"  iyz="0.00007112"
+            izz="0.02832"/>
     </xacro:rocker>
 
     <xacro:rocker prefix="right" parent="base_link" rockerx="${rocker_length}" rockery="${rocker_width}" rockerz="${rocker_height}" rockerkg="${rocker_mass}"  mimicing="1" mimic_joint="left_rocker_joint">
         <origin xyz="${rocker_x} ${-rocker_y} ${-rocker_z}" rpy="0 0 0"/>
+        <inertia
+            ixx="0.002956" ixy="-0.000001489324" ixz="-0.000008103407"
+            iyy="0.02924"  iyz="0.00007112"
+            izz="0.02832"/>
     </xacro:rocker>
 
-    <!-- Declare the wheels and their origins -->
+    <!-- Add the wheels -->
     <xacro:wheel prefix="front_left" parent="left_rocker_link" wheelrad="${wheel_radius}" wheeldepth="${wheel_depth}" wheelkg="${wheel_mass}" >
         <origin xyz="${wheel_spacing_x} ${wheel_spacing_y} ${wheel_spacing_z}" rpy="0 0 0"/>
+        <inertia
+            ixx="0.000391"  ixy="0.00000123962" ixz="5.52582e-7"
+            iyy="0.0004716" iyz="-0.000002082042"
+            izz="0.000391"/>
     </xacro:wheel>
 
     <xacro:wheel prefix="rear_left" parent="left_rocker_link" wheelrad="${wheel_radius}" wheeldepth="${wheel_depth}" wheelkg="${wheel_mass}">
         <origin xyz="${-wheel_spacing_x} ${wheel_spacing_y} ${wheel_spacing_z}" rpy="0 0 0"/>
+        <inertia
+            ixx="0.000391"  ixy="0.00000123962" ixz="5.52582e-7"
+            iyy="0.0004716" iyz="-0.000002082042"
+            izz="0.000391"/>
     </xacro:wheel>
 
     <xacro:wheel prefix="front_right" parent="right_rocker_link" wheelrad="${wheel_radius}" wheeldepth="${wheel_depth}" wheelkg="${wheel_mass}">
         <origin xyz="${wheel_spacing_x} ${-wheel_spacing_y} ${wheel_spacing_z}" rpy="0 0 0"/>
+        <inertia
+            ixx="0.000391"  ixy="0.00000123962" ixz="5.52582e-7"
+            iyy="0.0004716" iyz="-0.000002082042"
+            izz="0.000391"/>
     </xacro:wheel>
 
     <xacro:wheel prefix="rear_right" parent="right_rocker_link" wheelrad="${wheel_radius}" wheeldepth="${wheel_depth}" wheelkg="${wheel_mass}">
         <origin xyz="${-wheel_spacing_x} ${-wheel_spacing_y} ${wheel_spacing_z}" rpy="0 0 0"/>
+        <inertia
+            ixx="0.000391"  ixy="0.00000123962" ixz="5.52582e-7"
+            iyy="0.0004716" iyz="-0.000002082042"
+            izz="0.000391"/>
     </xacro:wheel>
 
     <!-- Add the differential suspenion sim plugin and reference the two rockers, as well as the force constant between them -->

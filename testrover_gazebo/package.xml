@@ -21,7 +21,7 @@
   <exec_depend>gazebo_plugins</exec_depend>
   <exec_depend>roscpp</exec_depend>
 
-  <exec_depend version_gte="1.2.0">testrover_description</exec_depend>
+  <exec_depend version_gte="1.2.0">rover_robots</exec_depend>
 
   <export>
 
