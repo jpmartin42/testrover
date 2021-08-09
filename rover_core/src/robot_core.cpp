@@ -3,14 +3,14 @@
 
 using namespace Robot;
 
-/* Hardware interface class RobotHardware */
+/* Hardware interface class RobotCore */
 
 // Constructor for robot
-RobotHardware::RobotHardware(ros::NodeHandle &nh_input)
+RobotCore::RobotCore(ros::NodeHandle &nh_input)
 {
-    ROS_INFO("[RobotHardware] Starting Robot");
+    ROS_INFO("[RobotCore] Starting Robot");
 
-    // Fetch parameters from ROS
+    // Fetch parameters from ROS and allocate them to different functions
 
     // Construct arm interface using fetched parameters
 
@@ -20,7 +20,27 @@ RobotHardware::RobotHardware(ros::NodeHandle &nh_input)
 
 };
 
-RobotHardware::~RobotHardware(){};
+// Destructor. Doesn't need to do anything fancy right now
+RobotCore::~RobotCore(){};
+
+// Function to get necessary parameters from ROS server
+bool RobotCore::fetchRosParameters() {
+
+    // Different robots have different joints, connections, etc. This function gets
+    // these parameters from ROS (uploaded during .launch files), which are then allocated
+    // to relevant variables
+
+    bool fetch = ROSParamHelper::fetchRosParameters(
+                nh, robot_params, urdf);
+
+    robot_name = robot_params.robot_name;
+    
+    num_joints = robot_params.num_joints;
+
+    // joints = robot_params.joints;
+
+    return fetch;
+}
 
 /** main() loop, core control loop **/
 
@@ -34,14 +54,14 @@ int main(int argc, char **argv)
     ros::NodeHandle nh;
 
     // Create blank robot object and other variables
-    RobotHardware* robot;
+    RobotCore* robot;
     std::string robotName;
     int hz;
     double rate;
     ros::Time current_time;
     ros::Duration duration;
 
-    // TODO: Should we also create a sim here? Or just expand on the RobotHardware object
+    // TODO: Should we also create a sim here? Or just expand on the RobotCore object
     // to be a child class of RobotHWSim instead? Will there be a difference?
 
     // Get robot name from ROS Parameter server

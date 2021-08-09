@@ -16,6 +16,8 @@
 #include <stdio.h>
 #include <random>
 
+#include <rover_hw/abstract_robot.hpp>
+
 namespace Robot {
 
 class RobotJoint
@@ -24,12 +26,10 @@ public:
     // Destructor
     virtual ~RobotJoint(){};
 
-    /* Getters functions */
+    /* Getter functions */
     virtual double getJointAngle() = 0;
     virtual double getJointVelocity() = 0;
     virtual double getJointEffort() = 0;
-
-    /* Command functions */
     
     // Sets the desired motor velocity, usually specified in rad/sec. Defined in child functions
     virtual bool setJointVelocity(double vel, const ros::Time &time, const ros::Duration &period) = 0;
@@ -37,6 +37,8 @@ public:
 // "Protected" qualities are the same as "private", but they can be
 // modified by inherited classes.
 protected:
+
+    /* Command functions */
 
     // String identifier of joint
     std::string jointName;
@@ -55,4 +57,4 @@ protected:
 
 };
 
-} // end namespace Rover
+} // end namespace Robot
