@@ -1,4 +1,4 @@
-// A simple structure encompassing all the components of the robot
+// Relevant parameters for the whole robot and its joints
 
 #pragma once
 
@@ -9,6 +9,7 @@
 
 namespace Robot {
 
+// A simple structure encompassing all the components of the robot
 class RobotParameters {
 
 public:
@@ -19,5 +20,24 @@ public:
 
     std::vector<JointInformation*> joints;
 };
+
+// Structure for containing extra joint information - not current position, but limits
+struct JointInformation {
+    std::string name;
+    std::string type;
+
+    uint8_t nodeId;
+
+    // home position
+    double home;
+
+    double torque_limits;
+
+    // PID gains
+    double kp;
+    double ki;
+    double kd;
+}
+
 
 } // end namespace Robot
