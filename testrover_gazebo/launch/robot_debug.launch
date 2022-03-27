@@ -1,0 +1,50 @@
+<launch>
+<!-- File to aid in debugging other code -->
+
+    <arg name="robot_name" default="testrover"/>
+        
+    <arg name="use_sim_time" default="true"/>
+    <arg name="gui" default="true"/>
+    <!-- Change to a desired world, defaulting to empty Gazebo world -->
+    <arg name="world_name" default="worlds/empty.world"/>
+
+    <!-- Launch Gazebo with the specified world -->
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+        <arg name="debug" value="0" />
+        <arg name="gui" value="$(arg gui)" />
+        <arg name="use_sim_time" value="$(arg use_sim_time)" />
+        <arg name="world_name" value="$(arg world_name)" />
+    </include>
+
+    <!-- Start description.launch -->
+        <arg name="address" default="$(find rover_robots)/$(arg robot_name)/urdf/$(arg robot_name).urdf.xacro"/>
+
+        <param name="robot_description" command="$(find xacro)/xacro $(arg address)" />
+        <!-- run it twice because the diff_drive_controller is dumb -->
+        <param name="$(arg robot_name)/robot_description" command="$(find xacro)/xacro $(arg address)" />
+    <!-- End description.launch -->
+
+    <!-- Start control.launch -->
+        <rosparam command="load" file="$(find rover_robots)/$(arg robot_name)/controls/control.yaml" />
+
+        <!-- Spawns controller based on above .yaml file names and declarations -->
+        <node name="controller_spawner" pkg="controller_manager" type="spawner"
+          ns="/$(arg robot_name)" args="testrover_joint_publisher joint_group_velocity_controller"/>
+
+        <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher">
+            <remap from="/joint_states" to="/$(arg robot_name)/joint_states"/>
+        </node>
+
+    <!-- End control.launch -->
+
+    <!-- spawning coordinates -->
+    <arg name="x" default="0" />
+    <arg name="y" default="0" />
+    <arg name="z" default="1" />
+    <arg name="yaw" default="0" />
+
+    <!-- Spawn the robot -->
+    <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model"
+	    args="-urdf -model $(arg robot_name) -param robot_description -x $(arg x) -y $(arg y) -z $(arg z) -R 0 -P 0 -Y $(arg yaw)" />
+
+</launch>

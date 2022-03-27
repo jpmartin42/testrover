@@ -1,0 +1,9 @@
+<launch>
+<!-- Loads controller definitions into the ROS server -->
+
+    <arg name="robot_name" default="testrover"/>
+
+    <rosparam command="load" file="$(find rover_robots)/$(arg robot_name)/controls/control.yaml" />
+
+
+</launch>

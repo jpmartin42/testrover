@@ -13,13 +13,22 @@
     <arg name="z" default="1" />
     <arg name="yaw" default="0" />
 
+
     <!-- Load description and controllers -->
     <include file="$(find rover_robots)/launch/description.launch">
         <arg name="robot_name" value="$(arg robot_name)"/>
     </include>
+
     <include file="$(find rover_robots)/launch/control.launch" >
         <arg name="robot_name" value="$(arg robot_name)"/>
     </include>
+
+    <!--
+    <include file="$(find rover_robots)/launch/master.launch" >
+        <arg name="robot_name" value="$(arg robot_name)"/>
+    </include>
+    -->
+
 
     <!-- Spawn the robot -->
     <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model"

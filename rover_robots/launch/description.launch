@@ -5,6 +5,8 @@
   <arg name="address" default="$(find rover_robots)/$(arg robot_name)/urdf/$(arg robot_name).urdf.xacro"/>
 
   <param name="robot_description" command="$(find xacro)/xacro $(arg address)" />
-  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
-  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
+  <!-- run it twice because Gazebo is dumb -->
+  <param name="$(arg robot_name)/robot_description" command="$(find xacro)/xacro $(arg address)" />
+
+  <!-- <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" /> -->
 </launch>
