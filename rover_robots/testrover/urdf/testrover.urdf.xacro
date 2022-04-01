@@ -20,6 +20,9 @@
     <!-- Define the kinect -->
     <xacro:include filename="$(find rover_robots)/urdf/macros/accessories/kinect.urdf.xacro" />
 
+    <!-- Define the IMU -->
+    <xacro:include filename="$(find rover_robots)/urdf/macros/accessories/imu.urdf.xacro" />
+
     <!-- Macro detailing the reactions of each wheel -->
     <xacro:include filename="$(find rover_robots)/urdf/macros/components/wheel.urdf.xacro" />
 
@@ -48,6 +51,9 @@
     <xacro:property name="camera_mnt_y" value="0.0"/>
     <xacro:property name="camera_mnt_z" value="${(.027+chassis_height)/2}"/>
 
+    <!-- Link and joint defining where the ground is on the robot -->
+    <link name="base_footprint"/>
+
     <!-- Create base_link for central robot chassis -->
     <link name="base_link">
         <visual>
@@ -69,6 +75,12 @@
                      iyy="7.0" iyz="0.0" izz="8.0" />
         </inertial>
     </link>
+
+    <joint name="base_joint" type="fixed">
+        <parent link="base_link"/>
+        <child link="base_footprint" />
+        <origin xyz="0 0 .2667" rpy="0 0 0"/>
+    </joint>
 
     <!-- Declare the wheels and their origins -->
     <xacro:wheel prefix="front_left" parent="base_link" wheelrad="${wheel_radius}" wheeldepth="${wheel_depth}" wheelkg="${wheel_mass}" >
@@ -99,5 +111,13 @@
     <xacro:kinect parent="base_link">
         <origin xyz="${camera_mnt_x} ${camera_mnt_y} ${camera_mnt_z}" rpy="0 0 0"/>
     </xacro:kinect>
+
+    <!-- Add the imu at its origin -->
+    
+    <xacro:imu parent="base_link">
+        <origin xyz="${camera_mnt_x} ${camera_mnt_y} ${camera_mnt_z}" rpy="0 0 0"/>
+    </xacro:imu>
+    
+
 
 </robot>

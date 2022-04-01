@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+
+<!-- define xacro as the namespace referencing the xacro format. Important for compiling xacro files and macros-->
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+<!-- Macro detailing the Xbox Kinect -->
+<!-- Due to the nature of the macro setup, each kinect must be defined in its own xacro file. 
+     The frameName refrence cannot be given in a xacro:property
+-->
+
+<xacro:arg name="imu_visual"    default="false"/>
+
+<xacro:macro name="imu" params="parent *origin">
+
+    <!-- The IMU will have no visible geometr -->
+
+    <!-- Definition of Gazebo camera plugin -->
+    <gazebo reference="imu_link">
+        <sensor type="imu" name="imu">
+                <always_on>true</always_on>
+                <visualize>$(arg imu_visual)</visualize>
+        </sensor>
+    </gazebo>
+
+    <!-- IMU plugin description -->
+    <gazebo>
+        <plugin name="imu_plugin" filename="libgazebo_ros_imu.so">
+            <alwaysOn>true</alwaysOn>
+            <bodyName>imu_link</bodyName>
+            <frameName>imu_link</frameName>
+            <topicName>imu</topicName>
+            <serviceName>imu_service</serviceName>
+            <gaussianNoise>0.0</gaussianNoise>
+            <updateRate>0</updateRate>
+            <imu>
+            <noise>
+                <type>gaussian</type>
+                <rate>
+                <mean>0.0</mean>
+                <stddev>2e-4</stddev>
+                <bias_mean>0.0000075</bias_mean>
+                <bias_stddev>0.0000008</bias_stddev>
+                </rate>
+                <accel>
+                <mean>0.0</mean>
+                <stddev>1.7e-2</stddev>
+                <bias_mean>0.1</bias_mean>
+                <bias_stddev>0.001</bias_stddev>
+                </accel>
+            </noise>
+            </imu>
+        </plugin>
+    </gazebo>
+       <!-- Create IMU model -->
+    <link name="imu_link">
+    </link>
+
+
+    <joint name="imu_joint" type="fixed">
+        <axis xyz="1 0 0" />
+        <xacro:insert_block name="origin"/>        
+        <parent link="${parent}"/>
+        <child link="imu_link"/>
+    </joint>
+
+</xacro:macro>
+
+</robot>
